@@ -17,26 +17,24 @@ const PromptCardList = ({ data, handleTagClick }) => {
 };
 
 const Feed = () => {
-  const [posts, setPosts] = useState([]);
-
+  const [allPosts, setAllPosts] = useState([]);
   //SEARCH STATES
   const [searchText, setSearchText] = useState("");
   const [searchTimeout, setSearchTimeout] = useState(null);
   const [searchedResults, setSearchedResults] = useState([]);
 
-  useEffect(() => {
-    const fetchPosts = async () => {
-      const response = await fetch("/api/prompt");
-      const data = await response.json();
+  const fetchPosts = async () => {
+    const response = await fetch("/api/prompt");
+    const data = await response.json();
 
-      setPosts(data);
-    };
+    setAllPosts(data);
+  };
+  useEffect(() => {
     fetchPosts();
   }, []);
-
   const filterPrompts = (searchtext) => {
     const regex = new RegExp(searchtext, "i"); // 'i' flag for case insensitive search
-    return posts.filter(
+    return allPosts.filter(
       (item) =>
         regex.test(item.creator.username) ||
         regex.test(item.tag) ||
@@ -62,7 +60,6 @@ const Feed = () => {
     const searchResult = filterPrompts(tagName);
     setSearchedResults(searchResult);
   };
-
   return (
     <div className="feed">
       <form className="relative w-full flex-center">
@@ -83,7 +80,7 @@ const Feed = () => {
           handleTagClick={handleTagClick}
         />
       ) : (
-        <PromptCardList data={posts} handleTagClick={handleTagClick} />
+        <PromptCardList data={allPosts} handleTagClick={handleTagClick} />
       )}
     </div>
   );
